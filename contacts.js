@@ -25,9 +25,41 @@ const getContactById = async contactId =>  {
         console.log(`Error: ${error.message}`.red)
     }
 }
+const removeContact = async contactId => {
+    try {
+        const contacts = await listContacts();
+        const newContacts = contacts.filter(({id}) => id !== contactId);
+        await fs.writeFile(contactsPath, JSON.stringify(newContacts, null, 2));
+        return newContacts;
+    }
+    catch (error) {
+        console.log(`Error: ${error.message}`.red)
+    }
+}
+
+const addContact = async (name, email, phone) => {
+    try {
+        const contacts = await listContacts();
+        const newContact = {
+            id: nanoid(),
+            name,
+            email,
+            phone,
+        }
+        const updatedContacts = [newContact, ...contacts];
+        await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+        return newContact;
+
+    }
+    catch (error) {
+        console.log(`Error: ${error.message}`.red)
+    }
+}
 
 module.exports = {
     listContacts,
     getContactById,
+    removeContact,
+    addContact,
 
 }
